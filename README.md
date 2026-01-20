@@ -8,8 +8,9 @@ Microservicio de productos desarrollado con **NestJS** y **Prisma**, diseñado p
 
 Sigue estos pasos para levantar el proyecto en tu entorno local:
 
-### 1️⃣ Clonar el repositorio
+###
 ```bash
+1️⃣ Clonar el repositorio
 git clone https://github.com/Nest-Microservices-Kometha/products-ms.git
 cd products-ms
 
