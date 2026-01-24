@@ -1,7 +1,7 @@
 import {
+  HttpStatus,
   Injectable,
   Logger,
-  NotFoundException,
   OnModuleInit,
 } from '@nestjs/common';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
@@ -10,6 +10,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { envs } from '../config';
 import { PaginationDto } from 'src/common';
 import { Prisma, PrismaClient } from 'src/generated/prisma/client';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class ProductsService extends PrismaClient implements OnModuleInit {
@@ -59,7 +60,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     const product = await this.product.findUnique({ where: { id, available: true } });
 
     if (!product) {
-      throw new NotFoundException(`Product with id: ${id} not found`);
+      throw new RpcException({
+        message: `Product with id: ${id} not found`,
+        status: HttpStatus.BAD_REQUEST
+      });
     }
 
     return product;
@@ -80,7 +84,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2025'
       ) {
-        throw new NotFoundException(`Product with id ${id} not found`);
+        throw new RpcException({
+          message: `Product with id ${id} not found`,
+          status: HttpStatus.BAD_REQUEST,
+        });
       }
 
       throw error;
