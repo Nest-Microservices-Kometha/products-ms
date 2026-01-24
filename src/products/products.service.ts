@@ -97,17 +97,27 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
   async remove(id: number) {
     await this.findOne(id);
 
-    const product = await this.product.update({
-      where: { id },
-      data: {
-        available: false
+    try {
+      const product = await this.product.update({
+        where: { id },
+        data: {
+          available: false
+        }
+      });
+
+      return product;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new RpcException({
+          message: `Product with id ${id} not found`,
+          status: HttpStatus.BAD_REQUEST,
+        });
       }
-    });
 
-    return product;
-
-    // return this.product.delete({
-    //   where: { id },
-    // });
+      throw error;
+    }
   }
 }
