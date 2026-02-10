@@ -4,7 +4,7 @@ import * as joi from 'joi';
 interface EnvVars {
   PORT: number;
   DATABASE_URL: string;
-  NATS_SERVERS: string;
+  NATS_SERVERS: string[];
 }
 
 const envVarsSchema = joi
